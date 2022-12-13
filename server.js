@@ -1,6 +1,6 @@
 require("dotenv").config();
 const http = require("http");
-const ws = require("ws");
+const ws = require("wss");
 
 const wss = new ws.Server({ noServer: true });
 const clients = new Set();
