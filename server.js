@@ -68,7 +68,7 @@ function on2Players() {
 }
 
 if (!module.parent) {
-  http.createServer(accept).listen(Number(process.env.SERVER_PORT));
+  http.createServer(accept).listen(Number(process.env.PORT));
 } else {
   exports.accept = accept;
 }
