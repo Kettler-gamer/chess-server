@@ -11,8 +11,6 @@ const rooms = [
   [{ player1: null, player2: null, playerTurn: 0 }],
   [{ player1: null, player2: null, playerTurn: 0 }],
 ];
-const players = [{ player: null }, { player: null }];
-let playerTurn = 0;
 
 function accept(req, res) {
   // all incoming requests must be websockets
@@ -45,10 +43,30 @@ function onConnect(ws) {
   });
 
   ws.on("close", () => {
+    checkPlayer(ws);
+    synchronizeRooms(ws);
     clients.delete(ws);
   });
 
   ws.send(getRooms());
+}
+
+function checkPlayer(ws) {
+  for (let room of rooms) {
+    if (room.player1 == ws) {
+      room.player1 = null;
+      if (room.player2 != null) {
+        room.player2.send("opponent-disconnected");
+      }
+      break;
+    } else if (room.player2 == ws) {
+      room.player2 = null;
+      if (room.player1 != null) {
+        room.player1.send("opponent-disconnected");
+      }
+      break;
+    }
+  }
 }
 
 function on2Players(room) {
@@ -156,7 +174,7 @@ function getRooms() {
 
 function isServerFull() {
   for (let room of rooms) {
-    if (room.length < 2) return false;
+    if (room.player1 == null || room.player2 == null) return false;
   }
   return true;
 }
