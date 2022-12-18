@@ -94,6 +94,7 @@ function commandHandler(command, ws) {
     case command.startsWith("disconnect-room"):
       const leaveRoomId = Number(command.replace("disconnect-room ", ""));
       onLeaveRoom(leaveRoomId, ws);
+      synchronizeRooms(ws);
       break;
     default:
       console.log("Unkown command: " + command);
